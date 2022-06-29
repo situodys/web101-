@@ -51,12 +51,13 @@ public class TodoController {
         }
     }
 
-    @GetMapping("/retrieve{id}")
-    public ResponseEntity<ResponseDTO<TodoEntity>> retrieveTodo(@PathVariable(required = true)String id) {
-        List<TodoEntity> list = new ArrayList<>();
-        TodoEntity todoEntity = todoService.retrieveTodoItem(id);
-        list.add(todoEntity);
-        ResponseDTO<TodoEntity> responseDTO = ResponseDTO.<TodoEntity>builder().data(list).build();
+    @GetMapping()
+    public ResponseEntity<?> retrieveTodoList() {
+        String temporaryUserId = "temporary-user";
+
+        List<TodoEntity> todoEntities = todoService.retrieve(temporaryUserId);
+        List<TodoDTO> todoDTOS = todoEntities.stream().map(TodoDTO::new).collect(Collectors.toList());
+        ResponseDTO<TodoDTO> responseDTO = ResponseDTO.<TodoDTO>builder().data(todoDTOS).build();
         return ResponseEntity.ok().body(responseDTO);
     }
 }
