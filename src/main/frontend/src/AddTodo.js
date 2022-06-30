@@ -20,11 +20,8 @@ class AddTodo extends React.Component{
         this.setState({item: {title: ""}});
     }
 
-    enterKeyEventHandler = (e) =>{
-        if (e.key === 'Enter') {
-            this.onButtonClick()
-        }
-    }
+
+
 
         render() {
         return(
