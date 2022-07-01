@@ -7,6 +7,7 @@ class Todo extends React.Component {
         super(props);
         this.state={item: props.item, readOnly: true};
         this.delete = props.delete;
+        this.update =props.update;
     }
 
     deleteEventHandler = () => {
@@ -16,8 +17,9 @@ class Todo extends React.Component {
     enterKeyEventHandler = (e) =>{
         if (e.key === 'Enter') {
             this.setState({readOnly: true});
+            this.update(this.state.item);
         }
-    };
+    }
 
     editEventHandler = (e) =>{
         const thisItem = this.state.item;
@@ -36,7 +38,7 @@ class Todo extends React.Component {
         const thisItem=this.state.item;
         thisItem.done =!thisItem.done;
         this.setState({item: thisItem});
-
+        this.update(this.state.item);
     }
 
     render() {

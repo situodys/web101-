@@ -3,6 +3,7 @@ import './App.css';
 import Todo from './Todo';
 import AddTodo from"./AddTodo"
 import {Paper, List, Container} from "@material-ui/core"
+import {call} from "./service/ApiService";
 
 class App extends React.Component {
     constructor(props) {
@@ -12,43 +13,27 @@ class App extends React.Component {
         }
     };
     componentDidMount() {
-        const requestOptions={
-            method: "GET",
-            headers: {"Content-Type": "application/json"}
-        };
-
-        fetch("http://localhost:8080/todo",requestOptions)
-            .then((response)=>response.json())
-            .then(
-                (response) =>{
-                    this.setState({
-                        items: response.data
-                    });
-                },
-                (error) => {
-                    this.setState({
-                        error,
-                    });
-                }
+        call("/todo","GET",null)
+            .then((response) => this.setState({items: response.data})
             );
     }
 
     add = (item) => {
-        const thisItems = this.state.items;
-        item.id = "ID-"+thisItems.length;
-        item.done = false;
-        thisItems.push(item);
-        this.setState({items:thisItems});
-        console.log("items : ", this.state.items);
+        call("/todo", "POST", item)
+            .then((response) => this.setState({items: response.data})
+            );
     }
 
     delete = (item) =>{
-        const thisItems = this.state.items;
-        console.log("Before update items: ",thisItems);
-        const newItems = thisItems.filter(e=> e.id!== item.id);
-        this.setState({items: newItems},() =>{
-            console.log("update items: ",this.state.items)
-        });
+        call("/todo", "DELETE", item)
+            .then((response) => this.setState({items: response.data})
+            );
+    }
+
+    update = (item) =>{
+        call("/todo", "PUT", item)
+            .then((response) => this.setState({items: response.data})
+            );
     }
 
     render() {
@@ -56,7 +41,12 @@ class App extends React.Component {
             <Paper style={{margin:16}}>
                 <List>
                     {this.state.items.map((item,idx) =>(
-                        <Todo item={item} key={item.id} delete={this.delete}/>
+                        <Todo
+                            item={item}
+                            key={item.id}
+                            delete={this.delete}
+                            update={this.update}
+                        />
                     ))}
                 </List>
             </Paper>
@@ -74,3 +64,30 @@ class App extends React.Component {
 }
 
 export default App;
+
+
+/*function exampleFunction() {
+    return new Promise((resolve, reject) => {
+        let oReq= new XMLHttpRequest();
+        oReq.open("GET","http://localhost:8080/todo");
+        oReq.onload =function (){   //resolve 상태
+            resolve(oReq.response);
+        };
+        oReq.onerror = function () {//reject 상태
+            reject(oReq.response);
+        };
+        oReq.send();                //pending 상태
+    });
+}
+
+exampleFunction()
+    .then((r)=>console.log("Resolved" + r))
+    .catch((e)=>console.log("Rejected" + e))*/
+
+/*fetch("localhost:8080/todo")
+    .then(response=>{
+        //response 수신 시 필요한 작업 작성
+    })
+    .catch(e=>{
+        //에러 났을 시 처리
+    })*/

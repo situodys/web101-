@@ -8,6 +8,13 @@ class AddTodo extends React.Component{
         this.add = props.add;
     }
 
+    enterKeyEventHandler = (e) =>{
+        if (e.key === 'Enter') {
+            this.add(this.state.item);
+            this.setState({item: {title: ""}});
+        }
+    }
+
     onInputChange = (e) =>{
         const thisItem = this.state.item;
         thisItem.title = e.target.value;
