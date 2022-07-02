@@ -1,8 +1,10 @@
 package com.example.demo.controller;
 
+import antlr.Token;
 import com.example.demo.dto.ResponseDTO;
 import com.example.demo.dto.UserDTO;
 import com.example.demo.model.UserEntity;
+import com.example.demo.security.TokenProvider;
 import com.example.demo.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +21,9 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private TokenProvider tokenProvider;
 
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@RequestBody UserDTO userDTO) {
@@ -51,9 +56,11 @@ public class UserController {
         UserEntity userEntity = userService.getByCredentials(userDTO.getEmail(), userDTO.getPassword());
 
         if (userEntity != null) {
+            final String token = tokenProvider.create(userEntity);
             final UserDTO resUserDTO = UserDTO.builder()
                     .email(userEntity.getEmail())
                     .id(userEntity.getId())
+                    .token(token)
                     .build();
             return ResponseEntity.ok().body(resUserDTO);
         } else {
