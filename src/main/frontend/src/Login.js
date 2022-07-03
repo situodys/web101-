@@ -1,6 +1,6 @@
 import React from "react"
 import {signin} from "./service/ApiService";
-import {Button, Container, Grid, TextField, Typography} from "@material-ui/core";
+import {Button, Container, Grid, Link, TextField, Typography} from "@material-ui/core";
 
 class Login extends React.Component {
     constructor(props) {
@@ -51,6 +51,13 @@ class Login extends React.Component {
                                 type={"password"}
                                 autoComplete={"current-password"}
                             />
+                        </Grid>
+                        <Grid container justifyContent={"flex-end"}>
+                            <Grid item>
+                                <Link href={"/signup"} variant="body2">
+                                    계정 생성
+                                </Link>
+                            </Grid>
                         </Grid>
                         <Grid item xs={12}>
                             <Button
